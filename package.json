@@ -1,0 +1,8 @@
+{
+  "name": "ai-visual-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive AI workshop visual lab for high-school students",
+  "main": "server.js",
+  "scripts": {"start": "node server.js"}
+}
