@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#111629" />
+  <meta name="description" content="A free, offline, interactive introduction to AI for high-school students." />
+  <title>AI Playlab — 60-minute workshop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#mainStage">Skip to the activity</a>
+
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand" aria-label="AI Playlab">
+        <span class="brand-mark" aria-hidden="true">AI</span>
+        <span><strong>PLAYLAB</strong><small>patterns, predictions, people</small></span>
+      </div>
+
+      <div class="session-tools">
+        <div class="workshop-clock" aria-label="Workshop countdown timer">
+          <button class="icon-button" id="timerToggle" type="button" aria-label="Start workshop timer" title="Start or pause timer">
+            <span id="timerIcon" aria-hidden="true">&#9654;</span>
+          </button>
+          <time id="timerDisplay" datetime="PT60M">60:00</time>
+          <button class="clock-reset" id="timerReset" type="button" aria-label="Reset workshop timer">reset</button>
+        </div>
+        <button class="top-button" id="notesBtn" type="button" aria-expanded="false" aria-controls="notesDrawer">Teacher notes</button>
+        <button class="top-button" id="focusBtn" type="button" aria-pressed="false">Focus view</button>
+        <button class="top-button icon-only" id="fullscreenBtn" type="button" aria-label="Enter full screen" title="Full screen">&#x26F6;</button>
+      </div>
+    </header>
+
+    <div class="global-progress" aria-hidden="true"><span id="globalProgress"></span></div>
+
+    <div class="workspace">
+      <aside class="rail" aria-label="Workshop chapters">
+        <div class="rail-heading">
+          <span>60-minute route</span>
+          <strong id="progressText">1 of 6</strong>
+        </div>
+
+        <nav class="chapter-nav" id="chapterNav">
+          <button class="chapter-button active" type="button" data-scene="0">
+            <span class="chapter-number">01</span>
+            <span class="chapter-label"><strong>Mind reader?</strong><small>5 min · warm-up</small></span>
+          </button>
+          <button class="chapter-button" type="button" data-scene="1">
+            <span class="chapter-number">02</span>
+            <span class="chapter-label"><strong>How AI learns</strong><small>7 min · explain</small></span>
+          </button>
+          <button class="chapter-button" type="button" data-scene="2">
+            <span class="chapter-number">03</span>
+            <span class="chapter-label"><strong>Train a machine</strong><small>15 min · experiment</small></span>
+          </button>
+          <button class="chapter-button" type="button" data-scene="3">
+            <span class="chapter-number">04</span>
+            <span class="chapter-label"><strong>Bias detective</strong><small>10 min · challenge</small></span>
+          </button>
+          <button class="chapter-button" type="button" data-scene="4">
+            <span class="chapter-number">05</span>
+            <span class="chapter-label"><strong>Word mixer</strong><small>13 min · create</small></span>
+          </button>
+          <button class="chapter-button" type="button" data-scene="5">
+            <span class="chapter-number">06</span>
+            <span class="chapter-label"><strong>Trust or check?</strong><small>10 min · reflect</small></span>
+          </button>
+        </nav>
+
+        <div class="keyboard-help">
+          <span><kbd>&larr;</kbd><kbd>&rarr;</kbd> move</span>
+          <span><kbd>N</kbd> notes</span>
+          <span><kbd>F</kbd> full screen</span>
+        </div>
+      </aside>
+
+      <main class="stage" id="mainStage" tabindex="-1">
+        <section class="scene active" data-scene="0" aria-labelledby="scene0Title">
+          <header class="scene-heading">
+            <div class="scene-meta"><span class="step-tag">MISSION 01</span><span class="time-tag">5 MIN</span></div>
+            <h1 id="scene0Title">Can this robot read your mind?</h1>
+            <p>Choose an animal silently. Answer honestly, and see whether the robot can guess it.</p>
+          </header>
+
+          <div class="room-prompt"><span>ASK THE ROOM</span> Is a machine intelligent just because its answer looks clever?</div>
+
+          <div class="mind-layout">
+            <article class="activity-card mind-game-card">
+              <div class="animal-bank" aria-label="Animal choices">
+                <span>&#x1F42C; Dolphin</span><span>&#x1F988; Shark</span><span>&#x1F985; Eagle</span><span>&#x1F427; Penguin</span>
+                <span>&#x1F436; Dog</span><span>&#x1F431; Cat</span><span>&#x1F98E; Lizard</span><span>&#x1F40D; Snake</span>
+              </div>
+
+              <div class="bot-row">
+                <div class="bot-face" aria-hidden="true"><i></i><i></i><b></b></div>
+                <div><span class="tiny-label">THE ROBOT ASKS</span><h2 id="mindQuestion">Does it spend most of its life in water?</h2></div>
+              </div>
+
+              <div class="answer-buttons" id="mindAnswerButtons">
+                <button class="choice-button yes" id="mindYes" type="button"><span>YES</span><small>follow this branch</small></button>
+                <button class="choice-button no" id="mindNo" type="button"><span>NO</span><small>follow this branch</small></button>
+              </div>
+
+              <div class="guess-box hidden" id="mindGuessBox" aria-live="polite">
+                <span>MY GUESS IS...</span>
+                <strong id="mindGuess">Dolphin</strong>
+                <div class="guess-actions">
+                  <button class="button primary" id="mindCorrect" type="button">You got it</button>
+                  <button class="button secondary" id="mindFooled" type="button">I fooled you</button>
+                </div>
+              </div>
+            </article>
+
+            <aside class="activity-card thinking-card tree-card">
+              <div class="card-title"><span class="card-index">HIDDEN</span><h2>Inside the robot</h2></div>
+
+              <div class="tree-locked" id="mindTreeLocked">
+                <div class="tree-lock-visual" aria-hidden="true"><i></i><i></i><i></i><i></i><b>&#x1F512;</b></div>
+                <strong>The decision process is hidden</strong>
+                <p id="mindHiddenProgress">Answer the robot, then reveal how every choice followed a branch.</p>
+                <button class="button secondary wide" id="revealMindTrick" type="button">Reveal the decision tree</button>
+              </div>
+
+              <div class="mind-tree-panel hidden" id="mindTreePanel">
+                <div class="tree-live-heading"><span><i></i> LIVE DECISION TREE</span><small>Chosen path glows cyan</small></div>
+                <div class="tree-scroll">
+                  <svg id="mindTreeSvg" class="mind-tree-svg" viewBox="0 0 960 570" role="img" aria-labelledby="mindTreeTitle mindTreeDescription">
+                    <title id="mindTreeTitle">The animal guessing decision tree</title>
+                    <desc id="mindTreeDescription">Questions branch on yes and no answers until the robot reaches one of eight animal guesses.</desc>
+
+                    <g class="tree-edge" data-edge-from="root" data-edge-answer="yes" data-edge-to="waterLungs"><path d="M470 76 C470 108 165 92 165 122"/><text x="305" y="101">YES</text></g>
+                    <g class="tree-edge" data-edge-from="root" data-edge-answer="no" data-edge-to="feathers"><path d="M470 76 C470 108 625 92 625 122"/><text x="548" y="101">NO</text></g>
+                    <g class="tree-edge" data-edge-from="waterLungs" data-edge-answer="yes" data-edge-to="dolphin"><path d="M165 174 C165 209 77 200 77 232"/><text x="113" y="207">YES</text></g>
+                    <g class="tree-edge" data-edge-from="waterLungs" data-edge-answer="no" data-edge-to="shark"><path d="M165 174 C165 209 253 200 253 232"/><text x="207" y="207">NO</text></g>
+                    <g class="tree-edge" data-edge-from="feathers" data-edge-answer="yes" data-edge-to="flies"><path d="M625 174 C625 207 477 198 477 232"/><text x="548" y="207">YES</text></g>
+                    <g class="tree-edge" data-edge-from="feathers" data-edge-answer="no" data-edge-to="fur"><path d="M625 174 C625 207 760 198 760 232"/><text x="693" y="207">NO</text></g>
+                    <g class="tree-edge" data-edge-from="flies" data-edge-answer="yes" data-edge-to="eagle"><path d="M477 284 C477 320 397 311 397 342"/><text x="430" y="317">YES</text></g>
+                    <g class="tree-edge" data-edge-from="flies" data-edge-answer="no" data-edge-to="penguin"><path d="M477 284 C477 320 557 311 557 342"/><text x="518" y="317">NO</text></g>
+                    <g class="tree-edge" data-edge-from="fur" data-edge-answer="yes" data-edge-to="barks"><path d="M760 284 C760 318 690 311 690 342"/><text x="721" y="317">YES</text></g>
+                    <g class="tree-edge" data-edge-from="fur" data-edge-answer="no" data-edge-to="legs"><path d="M760 284 C760 318 850 311 850 342"/><text x="805" y="317">NO</text></g>
+                    <g class="tree-edge" data-edge-from="barks" data-edge-answer="yes" data-edge-to="dog"><path d="M690 394 C690 432 632 424 632 460"/><text x="657" y="429">YES</text></g>
+                    <g class="tree-edge" data-edge-from="barks" data-edge-answer="no" data-edge-to="cat"><path d="M690 394 C690 432 746 424 746 460"/><text x="719" y="429">NO</text></g>
+                    <g class="tree-edge" data-edge-from="legs" data-edge-answer="yes" data-edge-to="lizard"><path d="M850 394 C850 432 824 424 824 460"/><text x="823" y="429">YES</text></g>
+                    <g class="tree-edge" data-edge-from="legs" data-edge-answer="no" data-edge-to="snake"><path d="M850 394 C850 432 922 424 922 460"/><text x="887" y="429">NO</text></g>
+
+                    <g class="tree-node question-node" data-tree-node="root" transform="translate(470 48)"><rect x="-105" y="-28" width="210" height="56" rx="13"/><text text-anchor="middle" y="-3">Mostly in water?</text><text class="node-status" text-anchor="middle" y="15">START HERE</text></g>
+                    <g class="tree-node question-node" data-tree-node="waterLungs" transform="translate(165 148)"><rect x="-88" y="-26" width="176" height="52" rx="12"/><text text-anchor="middle" y="4">Breathes with lungs?</text></g>
+                    <g class="tree-node question-node" data-tree-node="feathers" transform="translate(625 148)"><rect x="-78" y="-26" width="156" height="52" rx="12"/><text text-anchor="middle" y="4">Has feathers?</text></g>
+                    <g class="tree-node question-node" data-tree-node="flies" transform="translate(477 258)"><rect x="-74" y="-26" width="148" height="52" rx="12"/><text text-anchor="middle" y="4">Usually flies?</text></g>
+                    <g class="tree-node question-node" data-tree-node="fur" transform="translate(760 258)"><rect x="-65" y="-26" width="130" height="52" rx="12"/><text text-anchor="middle" y="4">Has fur?</text></g>
+                    <g class="tree-node question-node" data-tree-node="barks" transform="translate(690 368)"><rect x="-76" y="-26" width="152" height="52" rx="12"/><text text-anchor="middle" y="4">Known for barking?</text></g>
+                    <g class="tree-node question-node" data-tree-node="legs" transform="translate(850 368)"><rect x="-58" y="-26" width="116" height="52" rx="12"/><text text-anchor="middle" y="4">Has legs?</text></g>
+
+                    <g class="tree-node leaf-node" data-tree-leaf="dolphin" transform="translate(77 254)"><rect x="-54" y="-22" width="108" height="44" rx="22"/><text text-anchor="middle" y="5">&#x1F42C; DOLPHIN</text></g>
+                    <g class="tree-node leaf-node" data-tree-leaf="shark" transform="translate(253 254)"><rect x="-50" y="-22" width="100" height="44" rx="22"/><text text-anchor="middle" y="5">&#x1F988; SHARK</text></g>
+                    <g class="tree-node leaf-node" data-tree-leaf="eagle" transform="translate(397 364)"><rect x="-50" y="-22" width="100" height="44" rx="22"/><text text-anchor="middle" y="5">&#x1F985; EAGLE</text></g>
+                    <g class="tree-node leaf-node" data-tree-leaf="penguin" transform="translate(557 364)"><rect x="-59" y="-22" width="118" height="44" rx="22"/><text text-anchor="middle" y="5">&#x1F427; PENGUIN</text></g>
+                    <g class="tree-node leaf-node" data-tree-leaf="dog" transform="translate(632 482)"><rect x="-46" y="-22" width="92" height="44" rx="22"/><text text-anchor="middle" y="5">&#x1F436; DOG</text></g>
+                    <g class="tree-node leaf-node" data-tree-leaf="cat" transform="translate(746 482)"><rect x="-44" y="-22" width="88" height="44" rx="22"/><text text-anchor="middle" y="5">&#x1F431; CAT</text></g>
+                    <g class="tree-node leaf-node" data-tree-leaf="lizard" transform="translate(824 520)"><rect x="-52" y="-22" width="104" height="44" rx="22"/><text text-anchor="middle" y="5">&#x1F98E; LIZARD</text></g>
+                    <g class="tree-node leaf-node" data-tree-leaf="snake" transform="translate(918 482)"><rect x="-50" y="-22" width="100" height="44" rx="22"/><text text-anchor="middle" y="5">&#x1F40D; SNAKE</text></g>
+                  </svg>
+                </div>
+                <div class="tree-path-summary" id="mindPath" aria-live="polite"><span>START</span><strong>Waiting for your first answer</strong></div>
+              </div>
+
+              <div class="reveal-panel hidden" id="mindReveal">
+                <strong>No mind-reading. No learning.</strong>
+                <p>This is a <em>decision tree</em>: every question and branch was written in advance by a human.</p>
+                <div class="takeaway-line"><span>KEY IDEA</span> Clever output does not prove a machine learned.</div>
+              </div>
+              <button class="text-button hidden" id="mindRestart" type="button">&#8635; Try another animal with the tree open</button>
+            </aside>
+          </div>
+        </section>
+
+        <section class="scene" data-scene="1" aria-labelledby="scene1Title">
+          <header class="scene-heading compact-heading">
+            <div class="scene-meta"><span class="step-tag">MISSION 02</span><span class="time-tag">7 MIN</span></div>
+            <h1 id="scene1Title">Build a fruit scanner — two ways.</h1>
+            <p>Same apple-or-banana job. The difference is who chooses the decision rule.</p>
+          </header>
+
+          <div class="room-prompt"><span>WHAT THE COMPUTER SEES</span> Not a whole fruit—only YELLOWNESS, LENGTH, and CURVE, each measured from 0 to 100.</div>
+
+          <div class="scanner-topline">
+            <div class="flow-tabs scanner-tabs" role="tablist" aria-label="Build the scanner in two ways">
+              <button class="flow-tab active" id="rulesTab" type="button" role="tab" aria-selected="true" data-scanner-mode="rules">1 · Write the rule</button>
+              <button class="flow-tab" id="learningTab" type="button" role="tab" aria-selected="false" data-scanner-mode="learning">2 · Train from examples</button>
+            </div>
+            <div class="scanner-scores" aria-label="Scanner scores">
+              <span>HUMAN RULE <strong id="humanRuleScore">— / 4</strong></span>
+              <span>LEARNED MODEL <strong id="learnedModelScore">— / 4</strong></span>
+            </div>
+          </div>
+
+          <div class="scanner-workbench">
+            <article class="activity-card scanner-builder">
+              <div id="ruleBuilderPanel">
+                <span class="tiny-label">TRADITIONAL PROGRAMMING · YOU WRITE THE LOGIC</span>
+                <h2>Choose one measurement</h2>
+                <div class="rule-feature-buttons" id="ruleFeatureButtons">
+                  <button class="active" type="button" data-rule-feature="yellow"><span>&#9728;</span> Yellowness</button>
+                  <button type="button" data-rule-feature="length"><span>&#8596;</span> Length</button>
+                  <button type="button" data-rule-feature="curve"><span>&#8634;</span> Curve</button>
+                </div>
+                <div class="rule-code" id="ruleSentence"><span>IF</span> YELLOWNESS &ge; 50 <span>THEN</span> BANANA <span>ELSE</span> APPLE</div>
+                <label class="range-label" for="ruleThreshold"><span>Cutoff value</span><output id="ruleThresholdOutput">50</output></label>
+                <input id="ruleThreshold" type="range" min="0" max="100" step="5" value="50" />
+                <button class="button primary wide" id="runHumanRule" type="button">Run my rule on 4 fruits</button>
+                <div class="scanner-feedback neutral" id="ruleFeedback" aria-live="polite"><strong>Your job:</strong> choose the IF rule. The computer will follow it exactly.</div>
+              </div>
+
+              <div class="hidden" id="learningBuilderPanel">
+                <span class="tiny-label">MACHINE LEARNING · YOU CHOOSE LABELED EXAMPLES</span>
+                <h2>Select the model's training data</h2>
+                <p class="builder-help">Click examples to include or remove them. The label is the correct answer shown to the algorithm.</p>
+                <div class="training-fruit-grid" id="trainingFruitGrid"></div>
+                <div class="training-selection-row"><span id="trainingSelectionCount">4 selected · 2 apples · 2 bananas</span><button class="text-button" id="resetFruitTraining" type="button">Starter examples</button></div>
+                <button class="button primary wide" id="trainFruitModel" type="button">Train on 4 examples</button>
+                <div class="scanner-feedback neutral" id="learningFeedback" aria-live="polite"><strong>Your job:</strong> choose examples. Training will search for the IF rule.</div>
+              </div>
+            </article>
+
+            <article class="activity-card fruit-test-bench">
+              <div class="test-bench-heading"><div><span class="tiny-label">SAME TEST FOR BOTH METHODS</span><h2>4 mystery fruits</h2></div><span id="testBenchMode">Waiting for your human rule</span></div>
+              <div class="fruit-test-grid" id="fruitTestGrid"></div>
+              <p class="test-bench-note">The scanner must output <strong>APPLE</strong> or <strong>BANANA</strong>. A &#10003; means its prediction matched the hidden correct label.</p>
+            </article>
+          </div>
+
+          <div class="scanner-pipeline hidden" id="scannerPipeline" aria-live="polite">
+            <div><span>DATA</span><strong id="pipelineData">4 labeled examples</strong></div><i>&rarr;</i>
+            <div><span>TRAINING</span><strong>tested candidate rules</strong></div><i>&rarr;</i>
+            <div><span>MODEL</span><strong id="pipelineModel">IF YELLOWNESS &ge; 45</strong></div><i>&rarr;</i>
+            <div><span>PREDICTIONS</span><strong id="pipelinePredictions">2 / 4 correct</strong></div>
+          </div>
+
+          <div class="scanner-comparison hidden" id="scannerComparison">
+            <article><span>TRADITIONAL</span><strong>You chose the IF rule.</strong><p>The code applied exactly what you wrote.</p></article>
+            <article><span>MACHINE LEARNING</span><strong>You chose labeled examples.</strong><p>Training chose the IF rule; that saved rule is the model.</p></article>
+            <p><strong>Both can fail.</strong> Neither scanner understands fruit—it only uses measurements and rules.</p>
+          </div>
+        </section>
+
+        <section class="scene" data-scene="2" aria-labelledby="scene2Title">
+          <header class="scene-heading compact-heading">
+            <div class="scene-meta"><span class="step-tag">MISSION 03</span><span class="time-tag">15 MIN</span><span class="real-tag">REAL MINI ALGORITHM</span></div>
+            <h1 id="scene2Title">Teach the machine with dots.</h1>
+            <p>Every dot is an example. The model predicts by asking its nearest neighbors.</p>
+          </header>
+
+          <div class="room-prompt"><span>PAIR CHALLENGE</span> Add a misleading example. Can one bad dot bend the model's map?</div>
+
+          <div class="classifier-layout">
+            <article class="activity-card plot-card">
+              <div class="plot-toolbar" aria-label="Plot tools">
+                <div class="segmented" id="knnModes">
+                  <button class="active" type="button" data-knn-mode="orbit"><i class="shape-circle"></i> Add Orbit</button>
+                  <button type="button" data-knn-mode="spark"><i class="shape-triangle"></i> Add Spark</button>
+                  <button type="button" data-knn-mode="test"><i class="shape-star">&#9733;</i> Move mystery</button>
+                  <button type="button" data-knn-mode="erase">Eraser</button>
+                </div>
+                <span class="plot-hint" id="plotHint">Click the map to add an Orbit example.</span>
+              </div>
+              <div class="plot-shell">
+                <canvas id="knnCanvas" width="760" height="430" role="img" aria-label="A two-feature classification map with Orbit circles, Spark triangles, and a mystery star."></canvas>
+                <span class="axis-label y-axis">BRIGHTNESS</span>
+                <span class="axis-label x-axis">ROUNDNESS &rarr;</span>
+              </div>
+              <p class="canvas-summary" id="knnCanvasSummary" aria-live="polite">8 examples are ready. Train the model to reveal its prediction map.</p>
+            </article>
+
+            <aside class="classifier-controls">
+              <article class="activity-card model-card">
+                <div class="card-title"><span class="card-index">k-NN</span><h2>Neighbor vote</h2></div>
+                <label class="range-label" for="neighborCount"><span>Neighbors to ask</span><output id="neighborOutput">3</output></label>
+                <input id="neighborCount" type="range" min="1" max="7" step="2" value="3" />
+                <div class="neighbor-scale" aria-hidden="true"><span>1<br><small>sensitive</small></span><span>3</span><span>5</span><span>7<br><small>smoother</small></span></div>
+                <button class="button primary wide" id="trainKnn" type="button">Train + show the map</button>
+                <div class="model-state" id="knnState"><span></span> Not trained yet</div>
+              </article>
+
+              <article class="activity-card prediction-card">
+                <span class="tiny-label">MYSTERY STAR</span>
+                <div class="prediction-name" id="knnPrediction"><span>?</span><strong>No prediction yet</strong></div>
+                <div class="vote-meter" aria-hidden="true"><i id="orbitVoteBar"></i><b id="sparkVoteBar"></b></div>
+                <div class="vote-labels"><span id="orbitVotes">Orbit —</span><span id="sparkVotes">Spark —</span></div>
+                <div class="coordinate-controls">
+                  <label for="testX">Roundness <output id="testXOutput">56</output></label>
+                  <input id="testX" type="range" min="3" max="97" value="56" />
+                  <label for="testY">Brightness <output id="testYOutput">48</output></label>
+                  <input id="testY" type="range" min="3" max="97" value="48" />
+                </div>
+              </article>
+
+              <div class="dataset-actions">
+                <span><i class="shape-circle"></i> <b id="orbitCount">4</b> Orbits</span>
+                <span><i class="shape-triangle"></i> <b id="sparkCount">4</b> Sparks</span>
+                <button class="text-button" id="resetKnn" type="button">Reset</button>
+                <button class="text-button danger-text" id="clearKnn" type="button">Clear dots</button>
+              </div>
+            </aside>
+          </div>
+
+          <details class="math-peek">
+            <summary>Peek at the tiny bit of math</summary>
+            <div><code>distance&sup2; = (x&#8322; - x&#8321;)&sup2; + (y&#8322; - y&#8321;)&sup2;</code><p>The browser measures distance to every example, takes the nearest <em>k</em>, and lets them vote. No server and no AI API are involved.</p></div>
+          </details>
+        </section>
+
+        <section class="scene" data-scene="3" aria-labelledby="scene3Title">
+          <header class="scene-heading compact-heading">
+            <div class="scene-meta"><span class="step-tag">MISSION 04</span><span class="time-tag">10 MIN</span><span class="simulation-tag">SIMULATED IMAGE CLASSIFIER</span></div>
+            <h1 id="scene3Title">Can this bicycle classifier work after dark?</h1>
+            <p>Every input is a photo. The model must output one of two labels: <strong>BICYCLE</strong> or <strong>NOT BICYCLE</strong>.</p>
+          </header>
+
+          <div class="room-prompt"><span>YOUR GOAL</span> Change the training photos until the classifier gets at least 90% correct in both daylight and nighttime.</div>
+
+          <div class="bike-flow-banner" aria-label="Image classification flow">
+            <div class="flow-photo day"><span>&#x1F6B2;</span><small>NEW PHOTO</small></div><i>&rarr;</i>
+            <div class="flow-classifier"><span>&#9881;</span><strong>BICYCLE<br>IMAGE CLASSIFIER</strong></div><i>&rarr;</i>
+            <div class="flow-labels"><span>BICYCLE</span><span>NOT BICYCLE</span><small>ONE LABEL MUST WIN</small></div>
+          </div>
+
+          <div class="bike-lab-grid">
+            <article class="activity-card bike-training-card">
+              <span class="tiny-label">1 · LABELED TRAINING PHOTOS</span>
+              <div class="bike-card-heading"><div><h2>Teach it with 100 examples</h2><p>Labels are balanced: 50 BICYCLE + 50 NOT BICYCLE. The <strong>lighting</strong> is not.</p></div><button class="button secondary small" id="balanceBias" type="button">Use 50 day + 50 night</button></div>
+
+              <label class="bias-slider-label" for="biasBalance">
+                <span class="day-label">&#9728; DAY PHOTOS <strong id="dayDataLabel">90</strong></span>
+                <span class="night-label">NIGHT PHOTOS <strong id="nightDataLabel">10</strong> &#9790;</span>
+              </label>
+              <input class="bias-slider" id="biasBalance" type="range" min="10" max="90" step="2" value="90" aria-describedby="biasSliderHelp" />
+              <p class="sr-only" id="biasSliderHelp">Move left to collect more night photos and fewer day photos.</p>
+
+              <div class="training-photo-matrix">
+                <div><div class="faux-photo day"><span>&#x1F6B2;</span><b>BICYCLE</b></div><strong id="dayBikeCount">45 labeled day bikes</strong></div>
+                <div><div class="faux-photo day"><span>&#x1F697;</span><b>NOT BICYCLE</b></div><strong id="dayNotBikeCount">45 labeled day cars</strong></div>
+                <div><div class="faux-photo night"><span>&#x1F6B2;</span><b>BICYCLE</b></div><strong id="nightBikeCount">5 labeled night bikes</strong></div>
+                <div><div class="faux-photo night"><span>&#x1F697;</span><b>NOT BICYCLE</b></div><strong id="nightNotBikeCount">5 labeled night cars</strong></div>
+              </div>
+              <button class="button primary wide" id="trainBikeDetector" type="button">Train the bicycle classifier</button>
+              <div class="bike-training-status ready" id="bikeTrainingStatus"><span></span> Current model: trained on 90 day + 10 night photos.</div>
+              <p class="budget-note">These labeled photos teach the classifier which visual patterns go with each output label.</p>
+            </article>
+
+            <article class="activity-card live-photo-card">
+              <span class="tiny-label">2 · NEW PHOTO · NOT USED IN TRAINING</span>
+              <h2>Try the image classifier</h2>
+              <div class="photo-choice-row" id="bikePhotoChoices">
+                <button type="button" data-bike-sample="dayBike">&#9728; Day bicycle</button>
+                <button class="active" type="button" data-bike-sample="nightBike">&#9790; Night bicycle</button>
+                <button type="button" data-bike-sample="dayScooter">&#9728; Day scooter</button>
+                <button type="button" data-bike-sample="nightCar">&#9790; Night car</button>
+              </div>
+              <div class="selected-photo night" id="selectedBikePhoto" role="img" aria-label="A bicycle in a dark nighttime street photo"><span id="selectedBikeIcon">&#x1F6B2;</span><i></i><b id="selectedBikePhotoLabel">NEW NIGHT PHOTO</b></div>
+              <div class="classification-readout" aria-live="polite">
+                <div><span>CORRECT LABEL</span><strong id="bikeCorrectLabel">BICYCLE</strong></div>
+                <div id="bikePredictionRow" class="wrong"><span>MODEL PREDICTION</span><strong id="bikePredictionLabel">NOT BICYCLE &#10005;</strong></div>
+              </div>
+              <div class="photo-explanation" id="bikePhotoExplanation">This hard night bicycle is missed because the training set contains very few dark photos.</div>
+              <p class="single-photo-note">This is one illustrative photo. The test report below summarizes many unseen photos.</p>
+            </article>
+          </div>
+
+          <article class="activity-card bike-report-card">
+            <div class="bike-report-heading"><div><span class="tiny-label">3 · TEST RESULTS · PHOTOS THE MODEL NEVER SAW</span><h2>The overall score hides the night failures</h2></div><div class="report-mode-toggle"><button class="active" type="button" data-report-mode="original">Original test mix 90 / 10</button><button type="button" data-report-mode="equal">Count day + night equally</button></div></div>
+
+            <div class="bike-report-grid">
+              <div class="condition-results">
+                <div class="condition-row"><div><span>&#9728; DAY TEST SET · 90 photos</span><strong id="dayTestCount">89 / 90 correct</strong></div><div class="accuracy-track"><i id="dayAccuracyBar"></i></div><b id="dayAccuracy">99%</b></div>
+                <div class="condition-row night"><div><span>&#9790; NIGHT TEST SET · 10 photos</span><strong id="nightTestCount">7 / 10 correct</strong></div><div class="accuracy-track"><i id="nightAccuracyBar"></i></div><b id="nightAccuracy">68%</b></div>
+                <div class="test-composition" id="testComposition" aria-label="Test set composition: 9 day blocks and 1 night block"></div>
+                <p id="reportExplanation">Most test photos are daytime, so the strong day result dominates the average.</p>
+              </div>
+
+              <div class="overall-report">
+                <span id="overallReportLabel">OVERALL ON ORIGINAL TEST MIX</span>
+                <strong id="biasHeadlineScore">96%</strong>
+                <code id="biasFormula">(90 × 99% + 10 × 68%) ÷ 100 ≈ 96%</code>
+                <div class="condition-pass-row"><span>Day condition at least 90%</span><strong id="dayPass">PASS &#10003;</strong></div>
+                <div class="condition-pass-row"><span>Night condition at least 90%</span><strong class="fail" id="nightPass">NOT YET &#10005;</strong></div>
+                <div class="challenge-status" id="biasChallenge" aria-live="polite"><span>&#9675;</span><p><strong>Challenge not solved.</strong> Add more night training photos, retrain, and test again.</p></div>
+              </div>
+            </div>
+
+            <div class="bike-takeaway"><strong>Overall accuracy tells you how many test photos were right. Day/night results tell you <em>where</em> the classifier fails. You need both.</strong><p>This is a teaching simulation. Balancing day and night examples does not fix every kind of bias; coverage gaps can also affect accents, skin tones, mobility aids, devices, and environments.</p></div>
+          </article>
+        </section>
+
+        <section class="scene" data-scene="4" aria-labelledby="scene4Title">
+          <header class="scene-heading compact-heading">
+            <div class="scene-meta"><span class="step-tag">MISSION 05</span><span class="time-tag">13 MIN</span><span class="real-tag">REAL MINI LANGUAGE MODEL</span></div>
+            <h1 id="scene4Title">Build a story, one prediction at a time.</h1>
+            <p>This tiny model counts word patterns. Modern chatbots are vastly larger, but the predict-and-repeat loop is the key idea.</p>
+          </header>
+
+          <div class="room-prompt"><span>CREATE TOGETHER</span> Guess the next word, reveal the odds, then make the funniest 12-word robot story.</div>
+
+          <div class="language-layout">
+            <article class="activity-card story-card">
+              <div class="story-toolbar">
+                <div><span class="tiny-label">CHOOSE AN OPENING</span><div class="starter-buttons" id="starterButtons">
+                  <button type="button" data-starter="the curious robot">the curious robot...</button>
+                  <button type="button" data-starter="after school maya">after school Maya...</button>
+                  <button type="button" data-starter="on mars the robot">on Mars the robot...</button>
+                </div></div>
+                <button class="text-button" id="resetStory" type="button">Reset story</button>
+              </div>
+
+              <div class="story-paper">
+                <span class="story-label">YOUR GENERATED STORY</span>
+                <p id="storyOutput" aria-live="polite">The curious robot</p>
+                <span class="typing-cursor" aria-hidden="true"></span>
+              </div>
+
+              <div class="generator-actions">
+                <button class="button primary" id="sampleWord" type="button">Pick one word</button>
+                <button class="button secondary" id="generateEight" type="button">Generate 8 more</button>
+                <span id="storyWordCount">3 words</span>
+              </div>
+
+              <div class="temperature-control">
+                <label for="temperature"><span>Prediction style</span><output id="temperatureLabel">Balanced · 1.0</output></label>
+                <input id="temperature" type="range" min="5" max="18" value="10" />
+                <div><span>FOCUSED</span><span>BALANCED</span><span>WILD</span></div>
+              </div>
+            </article>
+
+            <aside class="activity-card probability-card">
+              <div class="card-title"><span class="card-index">NEXT</span><h2>Word probabilities</h2></div>
+              <p class="context-copy">After <code id="modelContext">curious robot</code>, the model found these patterns:</p>
+              <div class="token-options" id="tokenOptions" aria-label="Possible next words"></div>
+              <p class="model-note" id="modelNote">Click a word to choose it yourself, or let the model sample using the displayed chances.</p>
+            </aside>
+          </div>
+
+          <article class="activity-card teach-model training-experiment">
+            <div class="training-experiment-heading">
+              <div><span class="tiny-label">CHANGE THE MODEL, THEN PROVE IT CHANGED</span><h2>Teach one completion of your own</h2><p>The prompt stays fixed so we can compare the exact same prediction before and after training.</p></div>
+              <div class="corpus-equation"><span>15 built in</span><i>+</i><span><strong id="customCorpusCount">0</strong> yours</span><i>=</i><b><strong id="corpusCount">15</strong> total</b></div>
+            </div>
+
+            <div class="training-experiment-grid">
+              <div class="completion-builder">
+                <label for="newTrainingSentence">Complete this training sentence:</label>
+                <div class="fixed-prompt-input"><span>The curious robot</span><input id="newTrainingSentence" maxlength="110" type="text" placeholder="discovered a secret tunnel." /></div>
+                <div class="completion-actions"><button class="button primary" id="addTrainingSentence" type="button">Teach this example + compare</button><button class="text-button" id="fillTrainingExample" type="button">Use the example completion</button></div>
+                <p class="training-privacy">Everything stays in this browser. Do not enter private information.</p>
+                <p class="training-error hidden" id="trainingError" role="alert"></p>
+              </div>
+
+              <div class="training-proof" id="trainingFeedback" aria-live="polite">
+                <div class="proof-placeholder">
+                  <span>1</span><p>Enter at least one completion word.</p><span>2</span><p>Teach the example to the model.</p><span>3</span><p>Watch that word's probability change.</p>
+                </div>
+                <div class="hidden" id="trainingComparison">
+                  <div class="proof-success"><span>&#10003;</span><div><strong id="trainingSentenceEcho">Example added</strong><p>Testing the same prompt: <code>the curious robot &rarr; ?</code></p></div></div>
+                  <div class="comparison-table" id="trainingComparisonRows"></div>
+                  <p id="trainingExplanation">The probability changed because the model has now seen this word pattern.</p>
+                  <div class="proof-actions"><button class="button secondary small" id="repeatTrainingSentence" type="button">Teach the same example again</button><button class="button secondary small" id="useTaughtWord" type="button">Use the new word in the story</button><button class="text-button danger-text" id="clearCustomTraining" type="button">Clear my examples</button></div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="scene" data-scene="5" aria-labelledby="scene5Title">
+          <header class="scene-heading compact-heading">
+            <div class="scene-meta"><span class="step-tag">MISSION 06</span><span class="time-tag">10 MIN</span></div>
+            <h1 id="scene5Title">Trust it, check it, or keep a human in charge?</h1>
+            <p>AI can be useful without being the right tool for every job. Stakes change the answer.</p>
+          </header>
+
+          <div class="room-prompt"><span>VOTE WITH 1 · 2 · 3</span> Choose the best first move. Then defend your answer to a partner.</div>
+
+          <div class="trust-layout">
+            <article class="activity-card scenario-card">
+              <div class="scenario-progress"><span id="scenarioNumber">SCENARIO 1 / 5</span><div><i id="scenarioProgressBar"></i></div></div>
+              <div class="scenario-icon" id="scenarioIcon" aria-hidden="true">&#x1F389;</div>
+              <h2 id="scenarioTitle">Ask AI for ten science-club party themes</h2>
+              <p id="scenarioDetail">Low stakes, no private data, and you will choose the final idea.</p>
+              <div class="trust-choices" id="trustChoices">
+                <button type="button" data-choice="use"><span>1</span><strong>Use as a helper</strong><small>Brainstorm or draft</small></button>
+                <button type="button" data-choice="check"><span>2</span><strong>Verify carefully</strong><small>Check sources and work</small></button>
+                <button type="button" data-choice="human"><span>3</span><strong>Human in charge</strong><small>Do not delegate the decision</small></button>
+              </div>
+              <div class="scenario-feedback hidden" id="scenarioFeedback" aria-live="polite">
+                <div><span id="feedbackMark">GOOD CALL</span><strong id="feedbackTitle">Useful helper</strong><p id="feedbackCopy">Brainstorming is low stakes. A person still chooses what fits the group.</p></div>
+                <button class="button primary" id="nextScenario" type="button">Next scenario &rarr;</button>
+              </div>
+            </article>
+
+            <aside class="activity-card score-tower">
+              <span class="tiny-label">RESPONSIBILITY SCORE</span>
+              <strong><span id="trustScore">0</span> / 5</strong>
+              <div class="score-pips" id="scorePips" aria-label="Score: 0 out of 5"><i></i><i></i><i></i><i></i><i></i></div>
+              <p>There can be nuance. The score rewards the safest strong first move.</p>
+              <button class="text-button" id="restartTrust" type="button">Restart scenarios</button>
+            </aside>
+          </div>
+
+          <div class="finale hidden" id="finale">
+            <div><span class="tiny-label">EXIT TICKET</span><h2>Three things to remember</h2><p>Ask the room to complete the sentence, then reveal.</p></div>
+            <button class="button primary" id="revealFinale" type="button">Reveal the 3 Ps</button>
+            <div class="three-ps hidden" id="threePs">
+              <article><span>01</span><strong>PATTERNS</strong><p>AI learns patterns from examples and instructions.</p></article>
+              <article><span>02</span><strong>PREDICTIONS</strong><p>Its outputs are likely answers—not guaranteed facts.</p></article>
+              <article><span>03</span><strong>PEOPLE</strong><p>Humans choose the data, goals, checks, and responsibility.</p></article>
+            </div>
+          </div>
+        </section>
+
+        <footer class="stage-footer">
+          <button class="footer-button" id="prevScene" type="button" disabled><span aria-hidden="true">&larr;</span> Back</button>
+          <div class="scene-dots" id="sceneDots" aria-label="Chapter 1 of 6">
+            <button class="active" type="button" data-scene="0" aria-label="Go to chapter 1"></button>
+            <button type="button" data-scene="1" aria-label="Go to chapter 2"></button>
+            <button type="button" data-scene="2" aria-label="Go to chapter 3"></button>
+            <button type="button" data-scene="3" aria-label="Go to chapter 4"></button>
+            <button type="button" data-scene="4" aria-label="Go to chapter 5"></button>
+            <button type="button" data-scene="5" aria-label="Go to chapter 6"></button>
+          </div>
+          <button class="footer-button next" id="nextScene" type="button">Next mission <span aria-hidden="true">&rarr;</span></button>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <div class="drawer-scrim" id="drawerScrim" hidden></div>
+  <aside class="notes-drawer" id="notesDrawer" aria-hidden="true" aria-label="Teacher notes">
+    <header><div><span>TEACHER NOTES</span><h2 id="notesTitle">01 · Mind reader?</h2></div><button class="icon-button" id="closeNotes" type="button" aria-label="Close teacher notes">&#10005;</button></header>
+    <div class="notes-body">
+      <section><h3>Say this</h3><p id="notesSay"></p></section>
+      <section><h3>Ask the room</h3><p id="notesAsk"></p></section>
+      <section><h3>Do this</h3><ol id="notesDo"></ol></section>
+      <section class="watch-note"><h3>Watch for</h3><p id="notesWatch"></p></section>
+    </div>
+    <footer><span id="notesTime">Suggested: 5 minutes</span><button class="button secondary" id="notesNext" type="button">Next chapter</button></footer>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
